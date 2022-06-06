@@ -1,0 +1,66 @@
+plugins {
+    id 'org.springframework.boot' version '2.7.0'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id 'java'
+    id "com.avast.gradle.docker-compose" version "${dockerComposePlugin}"
+}
+
+group = 'com.example'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '17'
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-data-rest'
+    implementation('org.springframework.boot:spring-boot-starter-validation')
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+
+    implementation group: 'org.postgresql', name: 'postgresql', version: property('org-postgresql.version')
+    implementation group: 'org.flywaydb', name: 'flyway-core', version: property('flywayVersion')
+    implementation group: 'org.projectlombok', name: 'lombok', version: property('org-projectlombok.version')
+    implementation group: 'org.mapstruct', name: 'mapstruct' , version: property('org-mapstruct.version')
+
+    implementation group: 'org.hibernate', name: 'hibernate-ehcache', version: property('org.hibernate.version')
+
+    annotationProcessor group: 'org.projectlombok', name: 'lombok', version: property('org-projectlombok.version')
+    annotationProcessor group: 'org.mapstruct', name: 'mapstruct-processor', version: property('org-mapstruct.version')
+    annotationProcessor group: 'org.projectlombok', name: 'lombok-mapstruct-binding', version: property('org-lombok-mapstruct.version')
+
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.security:spring-security-test'
+}
+
+
+dockerCompose {
+
+    dev {
+        useComposeFiles = ["docker/docker-compose-dev.yml"]
+        removeVolumes = false
+        stopContainers = false
+        isRequiredBy(bootRun)
+    }
+
+}
+
+compileJava {
+    options.compilerArgs = [
+        '-Amapstruct.defaultComponentModel=spring'
+    ]
+}
+
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
