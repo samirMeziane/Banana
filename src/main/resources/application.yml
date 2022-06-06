@@ -1,0 +1,43 @@
+spring:
+  application:
+    name: test
+  datasource:
+    url: jdbc:postgresql://localhost:5437/test?currentSchema=public
+    username: test_db_user
+    password:
+  output:
+    ansi:
+      enabled: always
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQL10Dialect
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+    properties:
+      hibernate:
+        cache:
+          use_second_level_cache: true
+          region.factory_class: org.hibernate.cache.ehcache.EhCacheRegionFactory
+    javax:
+      persistence:
+        sharedCache:
+          mode: ENABLE_SELECTIV
+  flyway:
+    enabled: true
+
+server:
+  port: 8087
+  error:
+    include-message: always
+    include-binding-errors: always
+
+
+test:
+  api:
+    base-path: "api/v1"
+
+database:
+  host: localhost
+  port: 5437
+  username: test_db_user
+  schema: test
